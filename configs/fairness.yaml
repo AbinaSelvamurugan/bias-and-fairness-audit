@@ -1,0 +1,14 @@
+version: 1
+primary_attribute: physical_limitation
+secondary_attribute: plan_type
+attributes: [physical_limitation, plan_type]
+intersection: [physical_limitation, plan_type]
+comparison: between_groups
+ratio_convention: minimum_over_maximum
+small_group_n: 100
+small_condition_n: 30
+ci_level: 0.95
+bootstrap_replicates: 150
+bootstrap_seed: 271828
+thresholds: [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
+bootstrap_assumption: 'Row-level exploratory only; participant IDs unavailable; intervals are not cluster-valid'

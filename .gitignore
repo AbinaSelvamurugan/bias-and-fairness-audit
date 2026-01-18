@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+*.egg-info/
+*.log
+.DS_Store
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+.coverage
+htmlcov/
+dist/
+build/

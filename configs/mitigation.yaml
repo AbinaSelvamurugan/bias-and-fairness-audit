@@ -1,0 +1,5 @@
+version: 1
+enabled: false
+method: train_only_reweighing
+constraint_description: 'Equalize weight mass across (physical-limitation group, label) cells on training set'
+notes: 'Experimental association-based weighting, not a guarantee or deployable decision rule.'

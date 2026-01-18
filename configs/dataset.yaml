@@ -1,0 +1,14 @@
+version: 1
+identifier: statsmodels:randhie
+version_policy: "statsmodels >=0.14,<0.16; record the installed version"
+source: https://www.statsmodels.org/stable/datasets/generated/randhie.html
+license: public-domain (per statsmodels dataset documentation)
+raw_rows_expected: 20190
+target_source: mdvis
+target: any_md_visit
+positive_label: 1
+target_meaning: 'At least one outpatient physician visit in the recorded observation'
+features: [lncoins, lpi, fmde, disea, hlthg, hlthf, hlthp]
+audit_attributes: [physical_limitation, plan_type]
+sensitive_source_columns: [physlm, idp]
+missing_strategy: 'Report all missingness; median-impute predictors within training only'

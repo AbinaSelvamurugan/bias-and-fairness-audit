@@ -1,0 +1,10 @@
+version: 1
+seed: 20260101
+test_fraction: 0.25
+validation_fraction_of_development: 0.25
+threshold: 0.5
+selection_rule: 'Highest validation balanced accuracy; tie within 0.002 favors dummy, then logistic, then forest'
+models:
+  dummy: {strategy: prior}
+  logistic: {C: 1.0, max_iter: 1200}
+  forest: {n_estimators: 150, min_samples_leaf: 12, max_features: sqrt, n_jobs: 1}
