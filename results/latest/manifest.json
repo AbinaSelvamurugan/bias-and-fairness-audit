@@ -1,0 +1,21 @@
+{
+  "results": "run.json",
+  "models": [
+    "model_dummy.joblib",
+    "model_logistic.joblib",
+    "model_forest.joblib"
+  ],
+  "figures": [
+    "group_population.png",
+    "group_rates_physical_limitation.png",
+    "group_rates_plan_type.png",
+    "threshold_sensitivity.png"
+  ],
+  "reports": [
+    "findings.md",
+    "findings.html"
+  ],
+  "mitigation": true,
+  "fairlearn_status": "fairlearn_not_installed",
+  "aif360_status": "aif360_not_installed"
+}

@@ -1,0 +1,7 @@
+# Optional experimental group-label reweighing
+
+This is an experiment, NOT a default requirement or fairness certificate. Run `python scripts/run_audit.py --mitigation`. The baseline selection, 0.5 threshold and held-out rows stay identical. After selecting the forest/logistic/dummy model by train-side balanced accuracy, weights for *every development record* are computed as `w(g,y)=P_dev(g)P_dev(y)/P_dev(g,y)` from physical-limitation groups and the observed label. Each observed joint cell receives a positive weight, and weighted same-architecture estimator is fit only on development data. Test labels play no part in weight construction. No group identity is included as a prediction feature.
+
+Only interpret the mitigation on the recorded categories; `2_other_code` has uncertain meaning. Compare conventional performance (accuracy, balanced accuracy, FPR, FNR) and each group's selection, TPR, FPR and FNR on the original test records. Reduced equalized-odds difference cannot be interpreted as proof of reduced real-world discriminatory treatment. The mitigation can increase equal-opportunity difference or diminish predictive performance. If its settings or objective were selected after seeing test results, independent confirmation would require a new holdout.
+
+AIF360's optional metrics are diagnostic rather than this mitigation's implementation. Streamlit displays mitigation only when the run output contains it.
