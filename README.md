@@ -77,3 +77,26 @@ This dataset has 17,430 repeated predictor/group profiles (11,065 exact original
 - AIF360 documented scikit metrics: https://aif360.readthedocs.io/en/stable/modules/sklearn.html
 
 Code license: MIT. The dataset is public domain with attribution per statsmodels; its exact content hash is recorded in `run.json`. Do not use this artifact to make or justify access-to-care decisions.
+
+## Real-data run (1 September 2026)
+
+Executed end to end (`prepare_dataset`, `train_model`, `run_audit`, `run_audit --mitigation`, `generate_report`, and the
+test suite: 17 passed, 1 skipped because AIF360 is optional and was not installed) on the RAND Health Insurance
+Experiment extract bundled with statsmodels (20,190 rows), on a Modal container. Reports are in `results/latest/` and
+`results/mitigation/`.
+
+- Selected model: random forest (chosen on training-side validation balanced accuracy, not on fairness scores).
+- Held-out test set: 5,061 records. Accuracy 0.709, balanced accuracy 0.583, ROC-AUC 0.667.
+- Across physical-limitation groups: demographic-parity difference 0.351, equalized-odds difference 0.602.
+
+Group-disaggregated rates from the same run:
+
+![Group rates by physical-limitation code](results/latest/figures/group_rates_physical_limitation.png)
+
+![Group rates by plan type](results/latest/figures/group_rates_plan_type.png)
+
+Threshold sensitivity and group population figures are in `results/latest/figures/`, with the parallel mitigation run in `results/mitigation/`.
+
+These are descriptive associations on a historical dataset, not a finding that any model or institution is unfair.
+See `results/latest/findings.md` for the data-quality caveats (no person identifiers, so independence between rows
+cannot be established).

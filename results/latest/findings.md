@@ -1,14 +1,14 @@
 # FairAudit — Bias and Fairness Assessment of a Public Machine-Learning Dataset
 
-**Run identifier:** `20260101T045721Z` | **Scope:** observational audit, not a discrimination determination
+**Run identifier:** `20260901T050909Z` | **Scope:** observational audit, not a discrimination determination
 
 ## 1. Executive findings
 
-Selected `forest` on **training-side validation balanced accuracy**, not on final test fairness scores. Held-out records: **5872**; test accuracy **0.682**, balanced accuracy **0.559**, ROC-AUC **0.664**.
+Selected `forest` on **training-side validation balanced accuracy**, not on final test fairness scores. Held-out records: **5061**; test accuracy **0.709**, balanced accuracy **0.583**, ROC-AUC **0.667**.
 
-For physical-limitation coding, demographic-parity difference (maximum minus minimum group selection) = **0.147**; equalized-odds difference (maximal group TPR/FPR range) = **0.532**. These are descriptive associations only.
+For physical-limitation coding, demographic-parity difference (maximum minus minimum group selection) = **0.351**; equalized-odds difference (maximal group TPR/FPR range) = **0.602**. These are descriptive associations only.
 
-Fairlearn MetricFrame: **fairlearn_not_installed**. AIF360 plan-type comparison: **aif360_not_installed**.
+Fairlearn MetricFrame: **fairlearn_metricframe_ran**. AIF360 plan-type comparison: **aif360_not_installed**.
 
 ## 2. Scope and intended use
 
@@ -18,13 +18,13 @@ The positive outcome (Y=1) is *any recorded physician visit*, NOT adequate acces
 
 ## 3. Dataset provenance and usage conditions
 
-Dataset `statsmodels.datasets.randhie`, installed statsmodels version **0.14.6**. Upstream: https://www.statsmodels.org/stable/datasets/generated/randhie.html. Original study: RAND Health Insurance Experiment (1974–1982), extracted subset, **20190 rows** and **10 original variables**. The dataset-specific statsmodels copyright states **public domain**. Source extraction differs slightly from published versions; no canonical standalone release identifier. Exact content fingerprint: `08e1a0bdc18d728cc909e9f7ff3d22845021fec82dca9d7b4172137f1bec76a3`.
+Dataset `statsmodels.datasets.randhie`, installed statsmodels version **0.15.0**. Upstream: https://www.statsmodels.org/stable/datasets/generated/randhie.html. Original study: RAND Health Insurance Experiment (1974–1982), extracted subset, **20190 rows** and **10 original variables**. The dataset-specific statsmodels copyright states **public domain**. Source extraction differs slightly from published versions; no canonical standalone release identifier. Exact content fingerprint: `08e1a0bdc18d728cc909e9f7ff3d22845021fec82dca9d7b4172137f1bec76a3`.
 
 Upstream references: https://www.statsmodels.org/stable/datasets/generated/randhie.html ; https://www.icpsr.umich.edu/web/NACDA/studies/6439/ . The latter documents study-site clustering, sampling, restricted population eligibility, and longitudinal structure; these cannot be reconstructed from the distributed ten-column sample.
 
 ## 4. Data quality and representation
 
-Data rows **20190**, repeated predictor+group profiles **17430**, and exact original-row repeats **11065**. No rows dropped. Target prevalence **0.688**. Missingness by column: `{"mdvis": 0, "lncoins": 0, "idp": 0, "lpi": 0, "fmde": 0, "physlm": 0, "disea": 0, "hlthg": 0, "hlthf": 0, "hlthp": 0, "any_md_visit": 0, "physical_limitation": 0, "plan_type": 0}`.
+Data rows **20190**, repeated predictor+group profiles **17430**, and exact original-row repeats **11065**. No rows dropped. Target prevalence **0.688**. Missingness by column: `{"any_md_visit": 0, "disea": 0, "fmde": 0, "hlthf": 0, "hlthg": 0, "hlthp": 0, "idp": 0, "lncoins": 0, "lpi": 0, "mdvis": 0, "physical_limitation": 0, "physlm": 0, "plan_type": 0}`.
 
 **Original population composition:**
 
@@ -60,7 +60,7 @@ Y=1 if `mdvis>0`. Potential quality-of-service concern: disproportionate false n
 
 Included predictors: `['lncoins', 'lpi', 'fmde', 'disea', 'hlthg', 'hlthf', 'hlthp']`; excluded `mdvis` (label leakage) and `physlm`,`idp` (evaluation-only grouping indicators). Historic health status, insurance plan terms, and coinsurance correlate with group indicators and may act as proxies; omission does not remove proxy dependence.
 
-**Split:** GroupShuffleSplit on hash of complete observed input profile (not a person ID), seed=20260101; n_development=14318, n_train=11003, n_validation=3315, n_test=5872. Validation score chooses model, after which each estimator is refit on development only. Exact matching observed feature profiles are not shared with test; without person/household identifiers a person-disjoint split is not possible.
+**Split:** GroupShuffleSplit on hash of complete observed input profile (not a person ID), seed=20260101; n_development=15129, n_train=11344, n_validation=3785, n_test=5061. Validation score chooses model, after which each estimator is refit on development only. Exact matching observed feature profiles are not shared with test; without person/household identifiers a person-disjoint split is not possible.
 
 Preprocessing: median imputation and scaling in a scikit-learn Pipeline, fitted only on development observations. Logistic, random forest and dummy use fixed settings recorded in `run.json`. All final evaluations use threshold=0.5; sensitivity thresholds are descriptive and not model selection.
 
@@ -69,8 +69,8 @@ Training-side validation balanced accuracy:
 | model | balanced_accuracy |
 | --- | --- |
 | dummy | 0.500 |
-| logistic | 0.533 |
-| forest | 0.578 |
+| forest | 0.554 |
+| logistic | 0.519 |
 
 
 ## 7. Sensitive attributes and group definitions
@@ -81,12 +81,12 @@ Training-side validation balanced accuracy:
 
 | model | n | accuracy | balanced_accuracy | precision | recall_tpr | specificity_tnr | false_positive_rate | false_negative_rate | f1 | roc_auc | selection_rate |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| dummy | 5872.000 | 0.668 | 0.500 | 0.668 | 1.000 | 0.000 | 1.000 | 0.000 | 0.801 | 0.500 | 1.000 |
-| logistic | 5872.000 | 0.671 | 0.529 | 0.682 | 0.951 | 0.107 | 0.893 | 0.049 | 0.795 | 0.603 | 0.932 |
-| forest | 5872.000 | 0.682 | 0.559 | 0.698 | 0.924 | 0.194 | 0.806 | 0.076 | 0.795 | 0.664 | 0.885 |
+| dummy | 5061.000 | 0.673 | 0.500 | 0.673 | 1.000 | 0.000 | 1.000 | 0.000 | 0.804 | 0.500 | 1.000 |
+| forest | 5061.000 | 0.709 | 0.583 | 0.714 | 0.946 | 0.220 | 0.780 | 0.054 | 0.814 | 0.667 | 0.892 |
+| logistic | 5061.000 | 0.677 | 0.524 | 0.684 | 0.966 | 0.082 | 0.918 | 0.034 | 0.801 | 0.620 | 0.950 |
 
 
-Selected model confusion matrix: TP=3627, FP=1570, TN=377, FN=298. Decision threshold = 0.5, no excluded labels.
+Selected model confusion matrix: TP=3221, FP=1291, TN=365, FN=184. Decision threshold = 0.5, no excluded labels.
 
 ## 9. Disaggregated group results (held-out counts)
 
@@ -94,29 +94,29 @@ Selected model confusion matrix: TP=3627, FP=1570, TN=377, FN=298. Decision thre
 
 | group | n | positive_labels | negative_labels | tp | fp | tn | fn | label_prevalence | selection_rate | tpr | fpr | fnr | selection_rate_wilson |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 0_no | 4904.000 | 3221.000 | 1683.000 | 2974.000 | 1414.000 | 269.000 | 247.000 | 0.657 | 0.895 | 0.923 | 0.840 | 0.077 | [0.8858807990965305, 0.9030607411891662] |
-| 1_yes | 675.000 | 492.000 | 183.000 | 459.000 | 131.000 | 52.000 | 33.000 | 0.729 | 0.874 | 0.933 | 0.716 | 0.067 | [0.8469104491797795, 0.897004044312269] |
-| 2_other_code | 293.000 | 212.000 | 81.000 | 194.000 | 25.000 | 56.000 | 18.000 | 0.724 | 0.747 | 0.915 | 0.309 | 0.085 | [0.6947084273504293, 0.7937678137247323] |
+| 0_no | 4174.000 | 2774.000 | 1400.000 | 2657.000 | 1144.000 | 256.000 | 117.000 | 0.665 | 0.911 | 0.958 | 0.817 | 0.042 | [0.9016013297190706, 0.9189180781589974] |
+| 1_yes | 544.000 | 416.000 | 128.000 | 398.000 | 112.000 | 16.000 | 18.000 | 0.765 | 0.938 | 0.957 | 0.875 | 0.043 | [0.9139317702144806, 0.954932738551718] |
+| 2_other_code | 343.000 | 215.000 | 128.000 | 166.000 | 35.000 | 93.000 | 49.000 | 0.627 | 0.586 | 0.772 | 0.273 | 0.228 | [0.533208614516221, 0.6368979240752369] |
 
 
 **Insurance plan:**
 
 | group | n | positive_labels | negative_labels | tp | fp | tn | fn | label_prevalence | selection_rate | tpr | fpr | fnr | selection_rate_wilson |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 0_non_individual | 4344.000 | 3026.000 | 1318.000 | 2868.000 | 1057.000 | 261.000 | 158.000 | 0.697 | 0.904 | 0.948 | 0.802 | 0.052 | [0.8944063108953817, 0.9119708381350167] |
-| 1_individual | 1528.000 | 899.000 | 629.000 | 759.000 | 513.000 | 116.000 | 140.000 | 0.588 | 0.832 | 0.844 | 0.816 | 0.156 | [0.8129067215975905, 0.8503472947692072] |
+| 0_non_individual | 3941.000 | 2713.000 | 1228.000 | 2597.000 | 975.000 | 253.000 | 116.000 | 0.688 | 0.906 | 0.957 | 0.794 | 0.043 | [0.8968739460790749, 0.9150724992813766] |
+| 1_individual | 1120.000 | 692.000 | 428.000 | 624.000 | 316.000 | 112.000 | 68.000 | 0.618 | 0.839 | 0.902 | 0.738 | 0.098 | [0.8166224304351516, 0.8596295391242451] |
 
 
 **Intersectional groups** (interpret small cells cautiously):
 
 | group | n | positive_labels | negative_labels | selection_rate | tpr | fpr | fnr |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 0_no × 0_non_individual | 3602.000 | 2479.000 | 1123.000 | 0.924 | 0.955 | 0.857 | 0.045 |
-| 0_no × 1_individual | 1302.000 | 742.000 | 560.000 | 0.813 | 0.817 | 0.807 | 0.183 |
-| 1_yes × 0_non_individual | 480.000 | 359.000 | 121.000 | 0.842 | 0.919 | 0.612 | 0.081 |
-| 1_yes × 1_individual | 195.000 | 133.000 | 62.000 | 0.954 | 0.970 | 0.919 | 0.030 |
-| 2_other_code × 0_non_individual | 262.000 | 188.000 | 74.000 | 0.729 | 0.904 | 0.284 | 0.096 |
-| 2_other_code × 1_individual | 31.000 | 24.000 | 7.000 | 0.903 | 1.000 | 0.571 | 0.000 |
+| 0_no × 0_non_individual | 3279.000 | 2232.000 | 1047.000 | 0.926 | 0.965 | 0.842 | 0.035 |
+| 0_no × 1_individual | 895.000 | 542.000 | 353.000 | 0.856 | 0.930 | 0.742 | 0.070 |
+| 1_yes × 0_non_individual | 391.000 | 315.000 | 76.000 | 0.941 | 0.965 | 0.842 | 0.035 |
+| 1_yes × 1_individual | 153.000 | 101.000 | 52.000 | 0.928 | 0.931 | 0.923 | 0.069 |
+| 2_other_code × 0_non_individual | 271.000 | 166.000 | 105.000 | 0.624 | 0.843 | 0.276 | 0.157 |
+| 2_other_code × 1_individual | 72.000 | 49.000 | 23.000 | 0.444 | 0.531 | 0.261 | 0.469 |
 
 
 ## 10. Fairness metrics: definitions, conventions and assumptions
@@ -127,34 +127,34 @@ Demographic parity difference = highest minus lowest group selection rate. Demog
 
 | metric | value |
 | --- | --- |
-| selection_rate_difference | 0.147 |
-| selection_rate_ratio | 0.835 |
-| tpr_difference | 0.018 |
-| tpr_ratio | 0.981 |
-| fpr_difference | 0.532 |
-| fpr_ratio | 0.367 |
-| fnr_difference | 0.018 |
-| fnr_ratio | 0.790 |
-| accuracy_difference | 0.192 |
-| accuracy_ratio | 0.775 |
-| demographic_parity_difference | 0.147 |
-| demographic_parity_ratio | 0.835 |
-| equal_opportunity_difference | 0.018 |
-| equalized_odds_difference | 0.532 |
-| equalized_odds_ratio | 0.367 |
+| accuracy_difference | 0.063 |
+| accuracy_ratio | 0.917 |
+| demographic_parity_difference | 0.351 |
+| demographic_parity_ratio | 0.625 |
+| equal_opportunity_difference | 0.186 |
+| equalized_odds_difference | 0.602 |
+| equalized_odds_ratio | 0.312 |
+| fnr_difference | 0.186 |
+| fnr_ratio | 0.185 |
+| fpr_difference | 0.602 |
+| fpr_ratio | 0.312 |
+| selection_rate_difference | 0.351 |
+| selection_rate_ratio | 0.625 |
+| tpr_difference | 0.186 |
+| tpr_ratio | 0.806 |
 
 
-Fairlearn MetricFrame: `fairlearn_not_installed`; metric values from the independently implemented contingency engine are always identified as such. AIF360 binary plan comparison: `{'status': 'aif360_not_installed', 'detail': "No module named 'aif360'"}`. Signed AIF360 statistical-parity difference is individual minus non-individual; disparate-impact ratio is individual/non-individual. AIF360 signed average-odds difference = (TPR difference + FPR difference)/2 and is **not** Fairlearn's maximum-absolute difference.
+Fairlearn MetricFrame: `fairlearn_metricframe_ran`; metric values from the independently implemented contingency engine are always identified as such. AIF360 binary plan comparison: `{'detail': "No module named 'aif360'", 'status': 'aif360_not_installed'}`. Signed AIF360 statistical-parity difference is individual minus non-individual; disparate-impact ratio is individual/non-individual. AIF360 signed average-odds difference = (TPR difference + FPR difference)/2 and is **not** Fairlearn's maximum-absolute difference.
 
 **Sensitivity restricted to the two explicitly binary physical-limitation codes** (shown *in addition* to, not instead of, all-group results):
 
-Used 5579 exact binary-code observations; 293 ambiguous-code observations excluded **only** from this sensitivity contrast.
+Used 4718 exact binary-code observations; 343 ambiguous-code observations excluded **only** from this sensitivity contrast.
 
 | metric | value |
 | --- | --- |
-| demographic_parity_difference | 0.021 |
-| equal_opportunity_difference | 0.010 |
-| equalized_odds_difference | 0.124 |
+| demographic_parity_difference | 0.027 |
+| equal_opportunity_difference | 0.001 |
+| equalized_odds_difference | 0.058 |
 
 
 ## 11. Statistical uncertainty and sample size
@@ -163,9 +163,9 @@ Group Wilson score intervals are included for proportions conditional on their d
 
 | metric | point_estimate | exploratory_row_bootstrap_interval | successful_replicates |
 | --- | --- | --- | --- |
-| demographic_parity_difference | 0.147 | [0.10974530090362958, 0.20690885558918834] | 150.000 |
-| equalized_odds_difference | 0.532 | [0.43669990977540857, 0.6234308561596831] | 150.000 |
-| equal_opportunity_difference | 0.018 | [0.005789489504431828, 0.06089510555644993] | 150.000 |
+| demographic_parity_difference | 0.351 | [0.29512733703413596, 0.40436178935860057] | 150.000 |
+| equal_opportunity_difference | 0.186 | [0.14003761559565617, 0.24891339606473314] | 150.000 |
+| equalized_odds_difference | 0.602 | [0.5054337847665864, 0.696862884977651] | 150.000 |
 
 
 **Strong limitation:** no person or site IDs are available; the simple Wilson intervals and row bootstrap are not guaranteed calibrated for the true correlated/clustered study. Do not use them for a significance or legal-compliance claim. Intervals excluding zero would not resolve causality, multiplicity, or selection. Missing small-group signals do not establish parity.
@@ -180,13 +180,13 @@ The following fixed thresholds are **post-hoc diagnostic views on the test score
 
 | threshold | accuracy | balanced_accuracy | dp_difference | eo_difference | equal_opportunity_difference |
 | --- | --- | --- | --- | --- | --- |
-| 0.200 | 0.669 | 0.501 | 0.001 | 0.003 | 0.000 |
-| 0.300 | 0.676 | 0.513 | 0.061 | 0.206 | 0.009 |
-| 0.400 | 0.681 | 0.529 | 0.043 | 0.175 | 0.014 |
-| 0.500 | 0.682 | 0.559 | 0.147 | 0.532 | 0.018 |
-| 0.600 | 0.675 | 0.614 | 0.156 | 0.440 | 0.113 |
-| 0.700 | 0.618 | 0.618 | 0.150 | 0.303 | 0.204 |
-| 0.800 | 0.466 | 0.570 | 0.331 | 0.372 | 0.372 |
+| 0.200 | 0.673 | 0.500 | 0.000 | 0.000 | 0.000 |
+| 0.300 | 0.683 | 0.519 | 0.158 | 0.328 | 0.060 |
+| 0.400 | 0.700 | 0.550 | 0.161 | 0.305 | 0.056 |
+| 0.500 | 0.709 | 0.583 | 0.351 | 0.602 | 0.186 |
+| 0.600 | 0.700 | 0.619 | 0.334 | 0.523 | 0.187 |
+| 0.700 | 0.617 | 0.618 | 0.250 | 0.406 | 0.114 |
+| 0.800 | 0.483 | 0.573 | 0.276 | 0.289 | 0.239 |
 
 
 Across-model physical-limitation disparities at the same held-out threshold:
@@ -194,27 +194,13 @@ Across-model physical-limitation disparities at the same held-out threshold:
 | model | demographic_parity_difference | equalized_odds_difference | equal_opportunity_difference | demographic_parity_ratio |
 | --- | --- | --- | --- | --- |
 | dummy | 0.000 | 0.000 | 0.000 | 1.000 |
-| logistic | 0.062 | 0.078 | 0.050 | 0.938 |
-| forest | 0.147 | 0.532 | 0.018 | 0.835 |
+| forest | 0.351 | 0.602 | 0.186 | 0.625 |
+| logistic | 0.076 | 0.148 | 0.025 | 0.921 |
 
 
 ## 14. Experimental mitigation and comparison
 
-Experimental reweighing uses development-set `P(group)P(Y)/P(group,Y)` weights for `physical_limitation` and retains the selected model architecture. No held-out labels or test fairness metrics select weights. Model remains evaluated at the original 0.5 threshold.
-
-| model | accuracy | balanced_accuracy | selection_rate | recall_tpr | false_positive_rate | false_negative_rate |
-| --- | --- | --- | --- | --- | --- | --- |
-| original | 0.682 | 0.559 | 0.885 | 0.924 | 0.806 | 0.076 |
-| reweighted | 0.681 | 0.554 | 0.897 | 0.933 | 0.826 | 0.067 |
-
-
-| model | demographic_parity_difference | equalized_odds_difference | equal_opportunity_difference |
-| --- | --- | --- | --- |
-| original | 0.147 | 0.532 | 0.018 |
-| reweighted | 0.140 | 0.475 | 0.024 |
-
-
-Whether mitigation improved a targeted metric must be assessed against both figures and uncertainty, not assumed. Reweighing changes objective/sample influence, not labels or historical access patterns. A new degradation in another subgroup or metric remains possible.
+Not run by default. Enable `--mitigation` to evaluate a documented training-only group-label reweighing experiment without changing the held-out test records.
 
 ## 15. Utility–fairness trade-offs
 
@@ -244,7 +230,7 @@ The sample does not reveal why physician visits did or did not occur. Observed u
 
 - AIF360 sklearn metric definitions: https://aif360.readthedocs.io/en/stable/modules/sklearn.html
 
-- Captured package versions: `{"Jinja2": "3.1.6", "PyYAML": "6.0.3", "aif360": null, "fairlearn": null, "matplotlib": "3.10.8", "numpy": "2.3.5", "pandas": "2.2.3", "scikit-learn": "1.8.0", "scipy": "1.17.0", "statsmodels": "0.14.6", "streamlit": null}`
+- Captured package versions: `{"Jinja2": "3.1.6", "PyYAML": "6.0.3", "aif360": null, "fairlearn": "0.14.0", "matplotlib": "3.11.2", "numpy": "2.4.6", "pandas": "2.3.3", "scikit-learn": "1.8.0", "scipy": "1.17.1", "statsmodels": "0.15.0", "streamlit": null}`
 
 - Run configurations, scores, uncertainty, warnings and dataset fingerprint: `run.json`. Fixed random seeds are documented, but cross-platform bitwise identity is not promised.
 

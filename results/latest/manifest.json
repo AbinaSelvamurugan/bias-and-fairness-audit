@@ -15,7 +15,7 @@
     "findings.md",
     "findings.html"
   ],
-  "mitigation": true,
-  "fairlearn_status": "fairlearn_not_installed",
+  "mitigation": false,
+  "fairlearn_status": "fairlearn_metricframe_ran",
   "aif360_status": "aif360_not_installed"
 }
